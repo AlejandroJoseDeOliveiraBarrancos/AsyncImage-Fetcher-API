@@ -1,6 +1,6 @@
-using Digester.System.Achitectural.Test.Abstractions;
+using AsyncImage_Fetcher_Service.System.Architectural.Test.Abstractions;
 
-namespace Digester.System.Achitectural.Test;
+namespace AsyncImage_Fetcher_Service.System.Architectural.Test;
 
 public class SealedClassTests : BaseArchTest
 {
@@ -21,7 +21,7 @@ public class SealedClassTests : BaseArchTest
     [Fact]
     public void CommandQueryHandlers_Should_Be_Sealed()
     {
-        var types = Types.InAssembly(LogicUtilitiesAssembly)
+        var types = Types.InAssembly(LogicAssembly)
             .That()
             .HaveNameEndingWith("Handler")
             .And().AreClasses()

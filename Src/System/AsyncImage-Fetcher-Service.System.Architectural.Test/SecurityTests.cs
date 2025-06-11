@@ -1,8 +1,8 @@
-using Digester.System.Achitectural.Test.Abstractions;
+using AsyncImage_Fetcher_Service.System.Architectural.Test.Abstractions;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Digester.System.Achitectural.Test;
+namespace AsyncImage_Fetcher_Service.System.Architectural.Test;
 
 public class SecurityTests : BaseArchTest
 {
@@ -38,7 +38,7 @@ public class SecurityTests : BaseArchTest
     [Fact]
     public void Validators_Should_Reside_In_Logic_Or_Adapters()
     {
-        var forbiddenAssemblies = new[] { RulesUtilitiesAssembly, DriversDataAssembly, DriversUtilitiesAssembly };
+        var forbiddenAssemblies = new[] { RulesImagesAssembly, DriversDataAssembly };
         var validatorTypesInForbiddenLayers = Types.InAssemblies(forbiddenAssemblies)
             .That()
             .Inherit(typeof(AbstractValidator<>))

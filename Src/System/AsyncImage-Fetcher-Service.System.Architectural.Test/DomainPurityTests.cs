@@ -1,16 +1,16 @@
-using Digester.System.Achitectural.Test.Abstractions;
+using AsyncImage_Fetcher_Service.System.Architectural.Test.Abstractions;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Digester.System.Achitectural.Test;
+namespace AsyncImage_Fetcher_Service.System.Architectural.Test;
 
 public class DomainPurityTests : BaseArchTest
 {
     [Fact]
     public void DomainModels_Should_Not_Have_Persistence_Attributes()
     {
-        var domainModelTypes = Types.InAssembly(RulesUtilitiesAssembly)
-            .That().ResideInNamespace("Digester.Rules.Models").GetTypes();
+        var domainModelTypes = Types.InAssembly(RulesImagesAssembly)
+            .That().ResideInNamespace($"{RulesNamespace}.Images").GetTypes();
 
         var forbiddenAttributeTypes = new[] { typeof(TableAttribute), typeof(KeyAttribute) };
         var failingTypesMessages = new List<string>();
@@ -33,8 +33,8 @@ public class DomainPurityTests : BaseArchTest
     [Fact]
     public void DomainModels_Should_Be_Immutable()
     {
-        var domainModelTypes = Types.InAssembly(RulesUtilitiesAssembly)
-            .That().ResideInNamespace("Digester.Rules.Models")
+        var domainModelTypes = Types.InAssembly(RulesImagesAssembly)
+            .That().ResideInNamespace($"{RulesNamespace}.Images")
             .And().AreClasses().GetTypes();
 
         var failingTypesMessages = new List<string>();

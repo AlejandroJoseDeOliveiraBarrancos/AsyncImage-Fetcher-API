@@ -1,6 +1,6 @@
-using Digester.System.Achitectural.Test.Abstractions;
+using AsyncImage_Fetcher_Service.System.Architectural.Test.Abstractions;
 
-namespace Digester.System.Achitectural.Test;
+namespace AsyncImage_Fetcher_Service.System.Architectural.Test;
 
 public class NamingConventionTests : BaseArchTest
 {
@@ -14,7 +14,7 @@ public class NamingConventionTests : BaseArchTest
 
         var result = types
             .Should()
-            .ResideInNamespaceStartingWith("Digester.Adapters.Api.Controllers")
+            .ResideInNamespaceStartingWith($"{AdaptersNamespace}.Api.Controllers")
             .GetResult();
 
         result.IsSuccessful.Should().BeTrue(because: "Controllers should reside in the *.Api.Controllers namespace" + GetFailingTypes(result));
@@ -24,8 +24,8 @@ public class NamingConventionTests : BaseArchTest
     public void Interfaces_Should_Start_With_I()
     {
         var types = Types.InAssemblies(new[] {
-            AdaptersAssembly, DriversDataAssembly, DriversUtilitiesAssembly,
-            LogicUtilitiesAssembly, RulesUtilitiesAssembly
+            AdaptersAssembly, DriversDataAssembly,
+            LogicAssembly, RulesImagesAssembly
         })
         .That()
         .AreInterfaces();
@@ -42,17 +42,17 @@ public class NamingConventionTests : BaseArchTest
     public void Abstractions_Should_Reside_In_Correct_Namespaces()
     {
         var types = Types.InAssemblies(new[] {
-            AdaptersAssembly, DriversDataAssembly, DriversUtilitiesAssembly,
-            LogicUtilitiesAssembly, RulesUtilitiesAssembly
+            AdaptersAssembly, DriversDataAssembly,
+            LogicAssembly, RulesImagesAssembly
         })
         .That()
         .AreInterfaces();
 
         string[] allowedNamespaces = {
-            $"{RulesNamespace}.Utilities.Abstractions",
-            $"{LogicNamespace}.Utilities.Abstractions",
-            $"{DriversNamespace}.Utilities.Abstractions",
-            $"{AdaptersNamespace}.Utilities.Abstractions"
+            $"{RulesNamespace}.Images.Abstractions",
+            $"{LogicNamespace}.Abstractions",
+            $"{DriversNamespace}.Abstractions",
+            $"{AdaptersNamespace}.Abstractions"
           };
 
         var condition = types.Should().ResideInNamespace(allowedNamespaces[0]);
@@ -63,7 +63,7 @@ public class NamingConventionTests : BaseArchTest
         var result = condition.GetResult();
 
         result.IsSuccessful.Should().BeTrue(
-            because: $"Interfaces (Abstractions) must reside only in *.Utilities.Abstractions namespaces:\n{string.Join(", ", allowedNamespaces)}" +
+            because: $"Interfaces (Abstractions) must reside only in *.Abstractions namespaces:\n{string.Join(", ", allowedNamespaces)}" +
                      GetFailingTypes(result));
     }
 }

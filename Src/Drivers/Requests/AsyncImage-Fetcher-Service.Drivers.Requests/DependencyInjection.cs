@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace AsyncImage_Fetcher_Service.Drivers.Requests
 {
-    internal class DependenciInjection
+    public static class DependencyInjection
     {
+        public static IServiceCollection AddRequestsServices(this IServiceCollection services)
+        {
+            return services;
+        }
     }
 }

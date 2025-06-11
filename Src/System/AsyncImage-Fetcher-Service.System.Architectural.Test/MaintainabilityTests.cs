@@ -1,14 +1,13 @@
-using Digester.System.Achitectural.Test.Abstractions;
+using AsyncImage_Fetcher_Service.System.Architectural.Test.Abstractions;
 
-namespace Digester.System.Achitectural.Test;
+namespace AsyncImage_Fetcher_Service.System.Architectural.Test;
 
 public class MaintainabilityTests : BaseArchTest
 {
     private static readonly Assembly[] CoreAssemblies =
     [
-        RulesUtilitiesAssembly,
-        LogicUtilitiesAssembly,
-        DriversUtilitiesAssembly,
+        RulesImagesAssembly,
+        LogicAssembly,
         DriversDataAssembly
         // AdaptersAssembly is excluded as it might wrap exceptions
     ];
@@ -34,13 +33,12 @@ public class MaintainabilityTests : BaseArchTest
     public void Static_Classes_Should_Be_Limited()
     {
         var allowedStaticClassNames = new[] {
-            "Program", "Startup", "DependencyInjection", "GlobalUsings",
-            "Utils"
+            "Program", "Startup", "DependencyInjection", "GlobalUsings", "Image"
         };
 
         var allTypes = Types.InAssemblies(new[] {
-                AdaptersAssembly, DriversDataAssembly, DriversUtilitiesAssembly,
-                LogicUtilitiesAssembly, RulesUtilitiesAssembly
+                AdaptersAssembly, DriversDataAssembly,
+                LogicAssembly, RulesImagesAssembly
             })
             .That()
             .AreClasses()
@@ -54,8 +52,8 @@ public class MaintainabilityTests : BaseArchTest
             because: $"Static classes should be limited. Allowed: {string.Join(", ", allowedStaticClassNames)}. Found: {string.Join(", ", unexpectedStaticTypes.Select(t => t.FullName))}");
     }
 
-    private static bool IsDigesterTestAssembly(Assembly assembly) =>
-        assembly.GetName().Name?.StartsWith("Digester.", StringComparison.OrdinalIgnoreCase) == true &&
+    private static bool IsAsyncImageFetcherTestAssembly(Assembly assembly) =>
+        assembly.GetName().Name?.StartsWith("AsyncImage-Fetcher-Service.", StringComparison.OrdinalIgnoreCase) == true &&
         assembly.FullName?.Contains(".Test", StringComparison.OrdinalIgnoreCase) == true;
 
     private static bool IsTestClass(Type type) =>
@@ -67,7 +65,7 @@ public class MaintainabilityTests : BaseArchTest
     public void TestClasses_ShouldInheritFromBaseClass_InSameAssembly()
     {
         var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-        var testAssemblies = allAssemblies.Where(IsDigesterTestAssembly).ToList();
+        var testAssemblies = allAssemblies.Where(IsAsyncImageFetcherTestAssembly).ToList();
         var failingAssemblies = new List<string>();
 
         foreach (var assembly in testAssemblies)

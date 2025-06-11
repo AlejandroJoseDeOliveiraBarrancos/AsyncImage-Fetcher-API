@@ -1,15 +1,14 @@
-using Digester.System.Achitectural.Test.Abstractions;
-using Microsoft.AspNetCore.Mvc;
+using AsyncImage_Fetcher_Service.System.Architectural.Test.Abstractions;
 
-namespace Digester.System.Achitectural.Test;
+namespace AsyncImage_Fetcher_Service.System.Architectural.Test;
 
 public class AbstractionDependencyTests : BaseArchTest
 {
-    [Fact(Skip = "Temporarily skipped due to pipeline reasons")]
+    [Fact]
     public void Adapters_Should_Not_Depend_On_Concrete_Driver_Or_Logic_Classes()
     {
         var adapterTypes = Types.InAssembly(AdaptersAssembly);
-        var forbiddenDependencies = Types.InAssemblies(new[] { DriversDataAssembly, DriversUtilitiesAssembly, LogicUtilitiesAssembly })
+        var forbiddenDependencies = Types.InAssemblies(new[] { DriversDataAssembly, LogicAssembly })
             .That()
             .AreClasses().And().AreNotAbstract()
             .And().DoNotHaveNameEndingWith("Exception")
@@ -28,8 +27,8 @@ public class AbstractionDependencyTests : BaseArchTest
     [Fact]
     public void Drivers_Should_Not_Depend_On_Concrete_Logic_Classes()
     {
-        var driverTypes = Types.InAssemblies(new[] { DriversDataAssembly, DriversUtilitiesAssembly });
-        var forbiddenLogicDependencies = Types.InAssembly(LogicUtilitiesAssembly)
+        var driverTypes = Types.InAssembly(DriversDataAssembly);
+        var forbiddenLogicDependencies = Types.InAssembly(LogicAssembly)
             .That()
             .AreClasses().And().AreNotAbstract()
             .And().DoNotHaveNameEndingWith("Exception")
@@ -50,9 +49,9 @@ public class AbstractionDependencyTests : BaseArchTest
         var controllerTypes = Types.InAssembly(AdaptersAssembly)
             .That()
             .HaveNameEndingWith("Controller")
-            .Or().Inherit(typeof(ControllerBase));
+            .Or().Inherit(typeof(Microsoft.AspNetCore.Mvc.ControllerBase));
 
-        var domainModelNamespace = "Digester.Rules.Models";
+        var domainModelNamespace = "AsyncImage_Fetcher_Service.Rules.Images";
 
         var result = controllerTypes.ShouldNot().HaveDependencyOn(domainModelNamespace).GetResult();
 

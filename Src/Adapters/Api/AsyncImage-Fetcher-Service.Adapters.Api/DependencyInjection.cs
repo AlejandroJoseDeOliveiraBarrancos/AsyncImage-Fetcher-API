@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace AsyncImage_Fetcher_Service.Adapters.Api;
 
-namespace AsyncImage_Fetcher_Service.Adapters.Api
+public static class DependencyInjection
 {
-    internal class DependencyInjection
+    public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
+        services.AddControllers();
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
+
+        return services;
     }
 }

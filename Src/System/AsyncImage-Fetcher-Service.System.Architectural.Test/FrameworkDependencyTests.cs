@@ -1,13 +1,13 @@
-using Digester.System.Achitectural.Test.Abstractions;
+using AsyncImage_Fetcher_Service.System.Architectural.Test.Abstractions;
 
-namespace Digester.System.Achitectural.Test;
+namespace AsyncImage_Fetcher_Service.System.Architectural.Test;
 
 public class FrameworkDependencyTests : BaseArchTest
 {
     [Fact]
     public void Rules_Layer_Should_Not_Depend_On_Frameworks()
     {
-        var types = Types.InAssembly(RulesUtilitiesAssembly);
+        var types = Types.InAssembly(RulesImagesAssembly);
         var forbiddenFrameworkNamespaces = new[] {
             "Microsoft.EntityFrameworkCore",
             "Microsoft.AspNetCore",
@@ -24,7 +24,7 @@ public class FrameworkDependencyTests : BaseArchTest
     [Fact]
     public void Logic_Layer_Should_Not_Depend_On_Infrastructure_Frameworks()
     {
-        var types = Types.InAssembly(LogicUtilitiesAssembly);
+        var types = Types.InAssembly(LogicAssembly);
         var forbiddenFrameworkNamespaces = new[] {
             "Microsoft.EntityFrameworkCore",
             "Microsoft.AspNetCore.Mvc"

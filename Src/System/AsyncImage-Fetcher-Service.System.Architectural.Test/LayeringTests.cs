@@ -1,13 +1,13 @@
-using Digester.System.Achitectural.Test.Abstractions;
+using AsyncImage_Fetcher_Service.System.Architectural.Test.Abstractions;
 
-namespace Digester.System.Achitectural.Test;
+namespace AsyncImage_Fetcher_Service.System.Architectural.Test;
 
 public class LayeringTests : BaseArchTest
 {
     [Fact]
     public void Rules_Should_Not_Depend_On_Other_Layers()
     {
-        var types = Types.InAssembly(RulesUtilitiesAssembly);
+        var types = Types.InAssembly(RulesImagesAssembly);
         var forbiddenNamespaces = new[] { AdaptersNamespace, DriversNamespace, LogicNamespace };
 
         var result = types.ShouldNot().HaveDependencyOnAny(forbiddenNamespaces).GetResult();
@@ -18,7 +18,7 @@ public class LayeringTests : BaseArchTest
     [Fact]
     public void Logic_Should_Not_Depend_On_Adapters_Or_Drivers()
     {
-        var types = Types.InAssembly(LogicUtilitiesAssembly);
+        var types = Types.InAssembly(LogicAssembly);
         var forbiddenNamespaces = new[] { AdaptersNamespace, DriversNamespace };
 
         var result = types.ShouldNot().HaveDependencyOnAny(forbiddenNamespaces).GetResult();
@@ -29,7 +29,7 @@ public class LayeringTests : BaseArchTest
     [Fact]
     public void Drivers_Should_Not_Depend_On_Adapters()
     {
-        var types = Types.InAssemblies(new[] { DriversDataAssembly, DriversUtilitiesAssembly });
+        var types = Types.InAssembly(DriversDataAssembly);
         var forbiddenNamespaces = new[] { AdaptersNamespace };
 
         var result = types.ShouldNot().HaveDependencyOnAny(forbiddenNamespaces).GetResult();

@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>AsyncImage_Fetcher_Service.System.Architectural.Test</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="FluentAssertions" Version="8.3.0" />
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="NetArchTest.Rules" Version="1.3.2" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Adapters\Api\AsyncImage-Fetcher-Service.Adapters.Api\AsyncImage-Fetcher-Service.Adapters.Api.csproj" />
+    <ProjectReference Include="..\..\Adapters\AsyncImage-Fetcher-Service.Adapters\AsyncImage-Fetcher-Service.Adapters.csproj" />
+    <ProjectReference Include="..\..\Drivers\AsyncImage-Fetcher-Service.Drivers\AsyncImage-Fetcher-Service.Drivers.csproj" />
+    <ProjectReference Include="..\..\Drivers\Data\AsyncImage-Fetcher-Service.Drivers.Data\AsyncImage-Fetcher-Service.Drivers.Data.csproj" />
+    <ProjectReference Include="..\..\Drivers\Requests\AsyncImage-Fetcher-Service.Drivers.Requests\AsyncImage-Fetcher-Service.Drivers.Requests.csproj" />
+    <ProjectReference Include="..\..\Logic\AsyncImage-Fetcher-Service.Logic\AsyncImage-Fetcher-Service.Logic.csproj" />
+    <ProjectReference Include="..\..\Logic\Images\AsyncImage-Fetcher-Service.Logic.Images\AsyncImage-Fetcher-Service.Logic.Images.csproj" />
+    <ProjectReference Include="..\..\Rules\Images\AsyncImage-Fetcher-Service.Rules.Images\AsyncImage-Fetcher-Service.Rules.Images.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

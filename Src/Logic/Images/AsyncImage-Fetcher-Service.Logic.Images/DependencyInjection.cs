@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace AsyncImage_Fetcher_Service.Logic.Images
+namespace AsyncImage_Fetcher_Service.Logic.Images;
+
+public static class DependencyInjection
 {
-    internal class DependenciInjection
+    public static IServiceCollection AddImageServices(this IServiceCollection services)
     {
+        // Add image logic-related services here
+        return services;
     }
 }
