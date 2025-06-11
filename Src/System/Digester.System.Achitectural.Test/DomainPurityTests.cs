@@ -1,3 +1,4 @@
+using Digester.System.Achitectural.Test.Abstractions;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

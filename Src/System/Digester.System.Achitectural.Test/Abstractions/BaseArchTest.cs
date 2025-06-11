@@ -1,6 +1,4 @@
-using Digester.Rules.Utilities.Abstractions.Configuration;
-
-namespace Digester.System.Achitectural.Test;
+namespace Digester.System.Achitectural.Test.Abstractions;
 
 /// <summary>
 /// Base class for architectural tests, providing common assembly references,

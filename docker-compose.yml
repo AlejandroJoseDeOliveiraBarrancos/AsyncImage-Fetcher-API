@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: asyncimage-fetcher-api:local
+    container_name: asyncimage-fetcher-api
+    
+    ports:
+      - "5000:5000"
+      
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - STORAGE_DIR=/app/data/images
+
+    volumes:
+      - image_data:/app/data/images
+
+volumes:
+  image_data:
+    driver: local 

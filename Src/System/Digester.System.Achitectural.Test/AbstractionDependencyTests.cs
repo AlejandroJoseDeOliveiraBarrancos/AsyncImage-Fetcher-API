@@ -1,3 +1,4 @@
+using Digester.System.Achitectural.Test.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Digester.System.Achitectural.Test;

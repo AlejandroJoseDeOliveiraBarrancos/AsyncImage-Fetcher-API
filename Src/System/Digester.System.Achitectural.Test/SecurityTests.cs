@@ -1,3 +1,4 @@
+using Digester.System.Achitectural.Test.Abstractions;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 

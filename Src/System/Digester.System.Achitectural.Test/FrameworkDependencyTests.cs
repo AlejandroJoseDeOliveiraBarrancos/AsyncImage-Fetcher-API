@@ -1,3 +1,5 @@
+using Digester.System.Achitectural.Test.Abstractions;
+
 namespace Digester.System.Achitectural.Test;
 
 public class FrameworkDependencyTests : BaseArchTest
