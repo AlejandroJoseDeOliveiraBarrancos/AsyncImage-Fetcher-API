@@ -15,6 +15,17 @@ public class Startup
     {
         services.AddApiServices();
 
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+        });
+
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "AsyncImage-Fetcher-Service API", Version = "v1" });
@@ -33,6 +44,8 @@ public class Startup
         app.UseHttpsRedirection();
 
         app.UseRouting();
+
+        app.UseCors("AllowAll");
 
         app.UseAuthorization();
 
