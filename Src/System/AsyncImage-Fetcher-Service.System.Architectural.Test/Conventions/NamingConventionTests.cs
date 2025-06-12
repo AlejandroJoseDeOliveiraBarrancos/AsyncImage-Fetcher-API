@@ -1,6 +1,6 @@
 using AsyncImage_Fetcher_Service.System.Architectural.Test.Abstractions;
 
-namespace AsyncImage_Fetcher_Service.System.Architectural.Test;
+namespace AsyncImage_Fetcher_Service.System.Architectural.Test.Conventions;
 
 public class NamingConventionTests : BaseArchTest
 {

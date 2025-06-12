@@ -1,6 +1,6 @@
 using AsyncImage_Fetcher_Service.System.Architectural.Test.Abstractions;
 
-namespace AsyncImage_Fetcher_Service.System.Architectural.Test;
+namespace AsyncImage_Fetcher_Service.System.Architectural.Test.Dependencies;
 
 public class AbstractionDependencyTests : BaseArchTest
 {

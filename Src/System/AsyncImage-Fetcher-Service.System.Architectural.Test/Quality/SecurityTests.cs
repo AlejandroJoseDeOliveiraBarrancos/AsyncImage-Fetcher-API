@@ -2,7 +2,7 @@ using AsyncImage_Fetcher_Service.System.Architectural.Test.Abstractions;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 
-namespace AsyncImage_Fetcher_Service.System.Architectural.Test;
+namespace AsyncImage_Fetcher_Service.System.Architectural.Test.Quality;
 
 public class SecurityTests : BaseArchTest
 {

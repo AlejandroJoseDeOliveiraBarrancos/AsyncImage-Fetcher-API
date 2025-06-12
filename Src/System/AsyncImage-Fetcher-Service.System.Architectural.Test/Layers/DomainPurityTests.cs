@@ -2,7 +2,7 @@ using AsyncImage_Fetcher_Service.System.Architectural.Test.Abstractions;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AsyncImage_Fetcher_Service.System.Architectural.Test;
+namespace AsyncImage_Fetcher_Service.System.Architectural.Test.Layers;
 
 public class DomainPurityTests : BaseArchTest
 {
