@@ -1,327 +1,202 @@
 # AsyncImage Fetcher API
 
-**A robust, concurrent, and secure backend API for bulk image downloading, storage, and retrieval. Built with ASP.NET Core 6 and designed for extensibility, security, and performance.**
+**A robust, concurrent backend API for bulk image downloading and retrieval, built with .NET 8 and Clean Architecture.**
+
+This project provides a RESTful service that lets clients submit a batch of image URLs, downloads them concurrently with a configurable limit, and makes them available for later retrieval. It serves as a strong example of modern backend design principles, including Clean Architecture, CQRS, and resilient communication patterns.
 
 ---
 
 ## Table of Contents
 
-* [Project Overview](#project-overview)
 * [Features](#features)
 * [System Architecture](#system-architecture)
 * [Tech Stack](#tech-stack)
 * [Getting Started](#getting-started)
-
-  * [Prerequisites](#prerequisites)
-  * [Running Locally](#running-locally)
-  * [Configuration & Environment Variables](#configuration--environment-variables)
-* [Docker Usage](#docker-usage)
 * [API Documentation](#api-documentation)
-* [Example Workflows](#example-workflows)
-* [Extensibility & Scaling](#extensibility--scaling)
-* [Testing](#testing)
-* [Deployment & Production](#deployment--production)
+* [Testing Strategy](#testing-strategy)
+* [CI/CD & Maintenance](#cicd--maintenance)
 * [Contributing](#contributing)
 * [License](#license)
-* [Acknowledgments](#acknowledgments)
-
----
-
-## Project Overview
-
-**AsyncImage Fetcher API** is a RESTful backend service that lets clients submit a batch of image URLs and concurrently download them, with a configurable limit on simultaneous downloads to ensure optimal resource usage. Each downloaded image is stored with a unique filename, and the API provides endpoints to retrieve images as Base64 strings.
-
-This project was built to demonstrate modern, clean, scalable backend architecture and concurrency management using ASP.NET Core 6 and C#. It is designed as a learning resource, portfolio piece, and a foundation for real-world media/data processing microservices.
 
 ---
 
 ## Features
 
-* **Bulk Asynchronous Download:** Download multiple images at once, controlling concurrency for efficiency and server safety.
-* **Unique File Storage:** Images saved with robust, collision-proof names.
-* **Base64 Retrieval:** Retrieve any stored image as a Base64-encoded string via a simple API call.
-* **Robust Input Validation:** All requests are validated for correct types, formats, and limits.
-* **API Authentication:** Supports JWT authentication and pluggable IAM integrations.
-* **Auto-Generated Swagger Documentation:** Built-in OpenAPI spec for testing and client generation.
-* **Error Handling & Logging:** Granular feedback per URL, logging for success/failure, and extensible monitoring hooks.
-* **Designed for Cloud & Local:** Works out of the box on your machine, in Docker, or on any major cloud provider.
-* **Extensible:** Easy to add features like cloud storage, database metadata, or AI-based validation.
+* **Concurrent Bulk Downloading:** Submits a list of image URLs and downloads them in parallel, with a configurable `maxDownloadAtOnce` limit to control resource usage.
+* **Resilient HTTP Requests:** Uses **Polly** to implement Retry and Circuit Breaker policies, making image fetching resilient to transient network failures.
+* **Unique & Safe File Naming:** Generates a unique, sanitized filename for each downloaded image to prevent collisions and handle invalid characters from URLs.
+* **Base64 Image Retrieval:** Provides a simple endpoint to retrieve any stored image as a Base64-encoded string.
+* **Clean Architecture:** A well-defined, layered architecture that separates concerns, making the system highly testable, extensible, and maintainable.
+* **CQRS Pattern:** Segregates commands (actions that change state, like downloading) from queries (actions that read state, like retrieving an image), simplifying the logic.
+* **Containerized:** Fully configured to run in **Docker**, with a `docker-compose` setup for easy local development.
 
 ---
 
 ## System Architecture
 
+The solution follows the principles of **Clean Architecture**. This design enforces a strict separation of concerns by organizing code into independent layers, with dependencies flowing only inwards.
+
 ```mermaid
-flowchart LR
-    ProxyGate[Proxy Gate] --> LoadBalancer[Load Balancer]
-    LoadBalancer --> APIApp[API Application]
-    APIApp -- Auth via HTTPS --> IAMSystem[IAM System]
-    APIApp -- Image Meta via TCP --> Database[(Database)]
-    APIApp -- Image via HTTPS --> CloudStorage[(Cloud Storage)]
-    APIApp -- Metrics/Logs via HTTPS --> LoggingSystem[(Logging System)]
-    APIApp -- Download via HTTPS --> Internet[(External URLs)]
-    User[Developer / Media Platform] --> ProxyGate
+graph TD
+    subgraph "Outer Layers"
+        A(<b>Adapters</b><br/><i>Web API, Controllers, Mappers</i>)
+        B(<b>Drivers</b><br/><i>Data Access, HTTP Client</i>)
+    end
+    subgraph "Application Layer"
+        C(<b>Logic</b><br/><i>CQRS, Handlers, Dispatcher</i>)
+    end
+    subgraph "Core/Domain Layer"
+        D(<b>Rules</b><br/><i>Entities, Factories, Domain Logic</i>)
+    end
+    A --> C
+    B --> C
+    C --> D
 ```
 
-### Main Containers
-
-* **Proxy Gate:** First line of defense—rate limiting, request validation, and basic filtering.
-* **Load Balancer:** Distributes incoming requests for horizontal scaling and HA.
-* **API Application:** Implements all business logic, endpoints, and orchestration.
-* **IAM System:** Handles authentication and user/role validation.
-* **Database:** Stores image metadata (optional/future).
-* **Cloud Storage:** Stores images (optional/future, S3, GCS, etc.).
-* **Logging System:** Aggregates logs and metrics for observability.
-* **Internet:** Where images are fetched from!
+* **Rules (Domain):** The core of the application. Contains business entities (`Image.cs`) and core logic (like the `ImageNameFactory`) that is independent of any framework.
+* **Logic (Application):** Orchestrates the application's use cases using the CQRS pattern. It defines abstractions (interfaces) for what the outer layers must do, but knows nothing about *how* they do it.
+* **Drivers (Infrastructure):** Implements the abstractions defined in the Logic layer. This includes services for making HTTP requests (`ImageRequestService`) and storing files (`ImageRepository`, `LocalFileStorageService`).
+* **Adapters (Presentation):** The entry point to the application. For this project, it's an ASP.NET Core Web API that handles HTTP requests, validates input, and dispatches actions to the Logic layer.
 
 ---
 
 ## Tech Stack
 
-* **Language & Framework:** C#, ASP.NET Core 6
-* **Async/Concurrent:** Async/await, SemaphoreSlim for throttling
-* **API Docs:** Swagger/OpenAPI 3.0
-* **Containerization:** Docker
-* **Database:** Optional, supports PostgreSQL or your choice (via Entity Framework)
-* **Logging:** Built-in and supports Serilog, ELK, cloud services
-* **Auth:** JWT Bearer tokens, IAM integration
-* **Testing:** xUnit/NUnit, Moq
-* **Cloud Ready:** Deployable to any Docker-ready cloud provider
+* **Framework:** .NET 8, ASP.NET Core
+* **Architecture:** Clean Architecture, CQRS
+* **API:** RESTful, with auto-generated Swagger/OpenAPI documentation
+* **Validation:** FluentValidation
+* **Resiliency:** Polly
+* **Testing:** xUnit, Moq, FluentAssertions, `WebApplicationFactory` for in-memory integration tests
+* **Containerization:** Docker, Docker Compose
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
+* [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+* [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for containerized setup)
+* A REST client like [Postman](https://www.postman.com/) or the built-in Visual Studio `.http` file client.
 
-* [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
-* [Git](https://git-scm.com/)
-* [Docker](https://www.docker.com/) (for containerized setup)
-* (Optional) [PostgreSQL](https://www.postgresql.org/download/) if you want metadata persistence
+### Option 1: Running with Docker (Recommended)
+This is the simplest way to get the application running with its intended configuration.
 
----
-
-### Running Locally
-
-1. **Clone the Repository**
-
+1. **Clone the repository.**
+2. **Run Docker Compose:** From the root of the project, run:
    ```bash
-   git clone https://github.com/your-username/asyncimage-fetcher-api.git
-   cd asyncimage-fetcher-api
+   docker-compose up --build
    ```
+3. **Access the API:** The API will be available at `http://localhost:5000`. The interactive Swagger UI can be accessed at `http://localhost:5000/swagger`.
 
-2. **Restore Dependencies**
-
+### Option 2: Running Locally with the .NET SDK
+1. **Clone the repository.**
+2. **Restore dependencies:**
    ```bash
    dotnet restore
    ```
-
-3. **Configure Environment Variables**
-
-   * Copy `appsettings.Development.json.example` to `appsettings.Development.json` and set any secrets or API keys as needed.
-   * (Or, export env variables in your terminal.)
-
-4. **Run the Application**
-
+3. **Run the API project:**
    ```bash
-   dotnet run
+   dotnet run --project Src/Adapters/Api/AsyncImage-Fetcher-Service.Adapters.Api/AsyncImage-Fetcher-Service.Adapters.Api.csproj
    ```
+4. **Access the API:** The API will be available at `http://localhost:5224` (or another port specified in the launch settings).
 
-5. **Open Swagger UI**
-
-   * Browse to [http://localhost:5000/swagger](http://localhost:5000/swagger) to test and explore endpoints.
-
----
-
-### Configuration & Environment Variables
-
-| Variable                 | Purpose                                       | Example Value               |
-| ------------------------ | --------------------------------------------- | --------------------------- |
-| `ASPNETCORE_ENVIRONMENT` | App environment (`Development`, `Production`) | `Development`               |
-| `STORAGE_DIR`            | Path for local image storage                  | `/app/data/images`          |
-| `CLOUD_STORAGE_URL`      | Cloud storage endpoint (optional)             | `https://s3.amazonaws.com/` |
-| `IAM_ENDPOINT`           | URL for IAM System for token validation       | `https://auth.example.com`  |
-| `DATABASE_URL`           | Connection string for DB (optional)           | `Host=localhost;Port=5432`  |
-| `LOGGING_ENDPOINT`       | Log aggregation/monitoring URL                | `https://log.example.com`   |
-
-> **Note:** Sensible defaults provided in `appsettings.Development.json`.
-> In production, **always** set secrets using env variables or secure secret managers.
-
----
-
-## Docker Usage
-
-### Building and Running with Docker
-
-1. **Build the Docker image**
-
-   ```bash
-   docker build -t asyncimage-fetcher-api .
-   ```
-
-2. **Run the container**
-
-   ```bash
-   docker run -d -p 5000:5000 \
-     -e ASPNETCORE_ENVIRONMENT=Production \
-     -e STORAGE_DIR=/app/data/images \
-     --name image-api asyncimage-fetcher-api
-   ```
-
-3. **Access the API**
-
-   * Visit [http://localhost:5000/swagger](http://localhost:5000/swagger)
-
-#### Sample Dockerfile
-
-```dockerfile
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
-WORKDIR /app
-EXPOSE 5000
-
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY . .
-RUN dotnet restore
-RUN dotnet publish -c Release -o /app/publish
-
-FROM base AS final
-WORKDIR /app
-COPY --from=build /app/publish .
-ENTRYPOINT ["dotnet", "AsyncImageFetcher.dll"]
-```
+### Configuration
+The application can be configured via environment variables.
+| Variable                 | Purpose                                                                 | Example Value               |
+| ------------------------ | ----------------------------------------------------------------------- | --------------------------- |
+| `ASPNETCORE_ENVIRONMENT` | Sets the runtime environment (`Development`, `Production`)              | `Development`               |
+| `STORAGE_DIR`            | The directory path for storing downloaded images.                       | `/app/data/images` (Docker) |
 
 ---
 
 ## API Documentation
 
-**Interactive Swagger/OpenAPI** is provided at `/swagger` when you run the app.
+Interactive Swagger documentation is available at the `/swagger` endpoint when the application is running.
 
 ### Main Endpoints
 
-#### `POST /download-images`
-
+#### `POST /api/v1/images/download-images`
+Submits a list of URLs to be downloaded.
 * **Body:**
-
   ```json
   {
     "imageUrls": [
-      "https://example.com/image1.jpg",
-      "https://example.com/image2.png"
+      "https://images.dog.ceo/breeds/terrier-norwich/n02094258_1003.jpg",
+      "https://images.dog.ceo/breeds/cattledog-australian/IMG_1062.jpg",
+      "http://invalid-url.com/image.jpg"
     ],
-    "maxDownloadAtOnce": 3
+    "maxDownloadAtOnce": 2
   }
   ```
-
-* **Returns:**
-
+* **Success Response (`200 OK`):**
   ```json
   {
     "success": true,
-    "message": "All images processed.",
+    "message": "Downloads processed. Check status for each URL.",
     "urlAndNames": {
-      "https://example.com/image1.jpg": "img_20240610_a1b2c3d4.jpg",
-      "https://broken.com/image3.jpg": "Failed: 404 Not Found"
+      "https://images.dog.ceo/breeds/terrier-norwich/n02094258_1003.jpg": "20240723145010_e8a1b2c3_n02094258_1003.jpg",
+      "https://images.dog.ceo/breeds/cattledog-australian/IMG_1062.jpg": "20240723145011_d4e5f6a7_IMG_1062.jpg",
+      "http://invalid-url.com/image.jpg": "Error: An error occurred while sending the request."
     }
   }
   ```
 
-#### `GET /get-image-by-name/{image_name}`
-
-* **Returns:**
-
+#### `GET /api/v1/images/get-image-by-name/{imageName}`
+Retrieves a previously downloaded image.
+* **Success Response (`200 OK`):**
   ```json
   {
     "success": true,
     "imageBase64": "/9j/4AAQSkZJRgABAQEASABIAAD/..."
   }
   ```
-
-* **Errors:**
-
+* **Error Response (`404 Not Found`):**
   ```json
   {
     "success": false,
-    "message": "Image not found."
+    "message": "Image not found"
   }
   ```
+---
 
-**See full [OpenAPI spec](./openapi.yaml) for all request/response details.**
+## Testing Strategy
+
+The solution has a comprehensive testing strategy with dedicated test projects for each layer.
+* **Unit Tests:** Components like mappers, validators, and CQRS handlers are tested in isolation using `Moq` to mock dependencies.
+* **Integration Tests:**
+  * Dependency injection configurations are verified to ensure all services are registered correctly.
+  * The file storage service is tested against a temporary file system to validate real I/O operations.
+  * API controllers are tested using an in-memory `WebApplicationFactory`, sending real HTTP requests without needing to host the server.
+
+### Code Coverage
+The current test suite provides the following coverage:
+- **Line Coverage**: **73.5%**
+- **Branch Coverage**: **57%**
 
 ---
 
-## Example Workflows
+## CI/CD & Maintenance
 
-**Bulk Download:**
+### CI Pipeline (`.github/workflows/ci.yml`)
+A GitHub Actions workflow is configured to automatically:
+1.  **Build** the solution on every push and pull request to `main`.
+2.  **Run** all tests to ensure code quality and prevent regressions.
+3.  **Build and Push a Docker image** to GitHub Container Registry (`ghcr.io`) on every successful push to `main`.
 
-1. POST `/download-images` with a JSON body listing image URLs and desired concurrency.
-2. Receive a result object mapping each URL to its stored filename (or error).
-3. GET `/get-image-by-name/{image_name}` to retrieve any image as Base64 for use in apps, UIs, etc.
+### Monitoring & Logging
+The application uses the standard `Microsoft.Extensions.Logging` framework. When running with Docker, logs are output to the console and can be viewed with `docker-compose logs -f api`. For production, integrating a structured logging provider like **Serilog** or **NLog** to send logs to a centralized platform (e.g., Seq, Datadog, ELK) is recommended.
 
----
-
-## Extensibility & Scaling
-
-* **Cloud Storage:** Swap out local storage for AWS S3, Azure Blob, etc. by implementing an interface.
-* **Database Integration:** Easily add DB persistence for image metadata or audit logs.
-* **AI/ML Validation:** Add hooks for AI-based content checks or deduplication.
-* **More Auth:** Expand to OAuth2, API keys, or SSO providers by updating AuthService.
-* **Horizontal Scaling:** Add a Load Balancer and deploy multiple API containers; stateless design makes this trivial.
-* **Monitoring:** Plug into Prometheus, ELK, or Grafana for deep visibility.
+### Known Issues & TODOs
+- [ ] **CI Pipeline .NET Version Mismatch**: The GitHub Actions workflow (`ci.yml`) is configured to use `.NET 6.0.x`. The solution targets `.NET 8.0`. The workflow needs to be updated to use `dotnet-version: 8.0.x`.
+- [ ] **Improve Branch Coverage**: The current branch coverage is **57%**. More tests should be added to cover conditional logic and error-handling paths.
+- [ ] **Add Health Checks**: Implement a standard `/health` endpoint for automated monitoring in containerized environments.
 
 ---
-
-## Testing
-
-* **Unit & Integration Tests:** All business logic is service-layered and covered with xUnit/NUnit and mocks.
-* **Postman Collection:** Provided in `/tests` for smoke/end-to-end tests.
-* **Performance Testing:** Test high-volume downloads by simulating large POST batches.
-* **CI/CD Friendly:** Easily hooks into any pipeline for automatic tests and Docker builds.
-
----
-
-## Deployment & Production
-
-* **Production Logging:** Use Serilog, cloud logging, or the built-in .NET logger for metrics and alerts.
-* **Secrets Management:** Never commit secrets. Use Azure Key Vault, AWS Secrets Manager, or environment variables.
-* **Scaling:** Deploy behind a Load Balancer, use multiple app containers, and consider CDN for image serving.
-* **Security:** All endpoints require JWT authentication (see `IAM_ENDPOINT`), and input validation is enforced everywhere.
-* **Monitoring & Alerts:** Integrate with ELK, Prometheus, Datadog, or similar tools.
-* **Backups:** If using a DB or cloud storage, set up scheduled backups.
-
----
-
 ## Contributing
 
-1. **Fork the repository**
-2. **Clone your fork**
-3. **Create a feature branch**
-4. **Push your changes & open a PR**
-5. **Describe your changes clearly**
-
-All contributors are welcome! Please follow conventional commit messages and respect the project’s clean code guidelines.
+Contributions are welcome! Please fork the repository, create a feature branch, and submit a pull request with a clear description of your changes. Ensure all existing tests pass and add new tests for your features.
 
 ---
-
 ## License
-
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for more information.
-
----
-
-## Acknowledgments
-
-* Built with inspiration from real-world microservice patterns.
-* Thanks to the .NET community and OSS library authors.
-* Special thanks to all reviewers and contributors!
-
----
-
-## Contact
-
-Questions, ideas, or want to collaborate?
-Open an issue/PR on GitHub!
-
----
-
-*AsyncImage Fetcher API – Reliable, extensible, and made for real-world scale.*
+This project is licensed under the MIT License.

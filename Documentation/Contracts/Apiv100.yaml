@@ -1,0 +1,134 @@
+openapi: 3.0.1
+info:
+  title: AsyncImage Fetcher API
+  description: API for asynchronously downloading and retrieving images in bulk.
+  version: "1.0.0"
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+paths:
+  /download-images:
+    post:
+      summary: Download images asynchronously
+      tags: [Images]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestDownload"
+      responses:
+        "200":
+          description: Download results for all images
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseDownload"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /get-image-by-name/{imageName}:
+    get:
+      summary: Get a Base64-encoded image by its unique name
+      tags: [Images]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: imageName
+          required: true
+          schema:
+            type: string
+          description: The unique name assigned to the image.
+      responses:
+        "200":
+          description: The image as a Base64-encoded string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetImageResponse"
+        "404":
+          description: Image not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RequestDownload:
+      type: object
+      properties:
+        imageUrls:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: List of image URLs to download.
+        maxDownloadAtOnce:
+          type: integer
+          minimum: 1
+          maximum: 10
+          description: Maximum number of concurrent downloads.
+      required:
+        - imageUrls
+        - maxDownloadAtOnce
+    ResponseDownload:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        urlAndNames:
+          type: object
+          additionalProperties:
+            type: string
+          description: Mapping of original URLs to stored filenames or error messages.
+      required:
+        - success
+        - urlAndNames
+    GetImageResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        imageBase64:
+          type: string
+          description: The image as a Base64-encoded string.
+      required:
+        - success
+        - imageBase64
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Image not found"
+      required:
+        - success
+        - message

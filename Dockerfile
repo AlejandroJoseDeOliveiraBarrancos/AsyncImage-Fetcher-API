@@ -12,10 +12,6 @@ COPY ["Src/Logic/Utilities/Digester.Logic.Utilities.csproj", "Src/Logic/Utilitie
 COPY ["Src/Rules/Events/Digester.Rules.Events.csproj", "Src/Rules/Events/"]
 COPY ["Src/Rules/Utilities/Digester.Rules.Utilities.csproj", "Src/Rules/Utilities/"]
 
-COPY ["Src/System/Digester.System.Acceptance.Test/Digester.System.Acceptance.Test.csproj", "Src/System/Digester.System.Acceptance.Test/"]
-COPY ["Src/System/Digester.System.Achitectural.Test/Digester.System.Achitectural.Test.csproj", "Src/System/Digester.System.Achitectural.Test/"]
-COPY ["Src/System/Digester.System.Integration.Test/Digester.System.Integration.Test.csproj", "Src/System/Digester.System.Integration.Test/"]
-
 RUN dotnet restore "AsyncImage-Fetcher-Service.sln"
 
 COPY . .
