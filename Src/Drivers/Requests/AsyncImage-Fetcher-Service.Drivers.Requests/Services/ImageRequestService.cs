@@ -39,5 +39,19 @@ namespace AsyncImage_Fetcher_Service.Drivers.Requests.Services
                 return null;
             }
         }
+
+        public async Task<byte[]> FetchImageAsByteArrayAsync(string imageUrl, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                _logger.LogInformation("Requesting image bytes from url: {ImageUrl}", imageUrl);
+                return await _httpRequestService.GetAsByteArrayAsync(imageUrl, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to process image byte request for url: {ImageUrl}", imageUrl);
+                return null;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 using AsyncImage_Fetcher_Service.Adapters.Api.Contracts.V1;
+using AsyncImage_Fetcher_Service.Adapters.Api.Contracts.V1.Validators;
 using AsyncImage_Fetcher_Service.Adapters.Api.Controllers.Base;
 using AsyncImage_Fetcher_Service.Adapters.Api.Mappers;
 using AsyncImage_Fetcher_Service.Logic.Abstractions.Interfaces;
@@ -21,20 +22,29 @@ namespace AsyncImage_Fetcher_Service.Adapters.Api.Controllers
         public async Task<IActionResult> DownloadImages([FromBody] DownloadImagesRequestDto request)
         {
             var command = request.ToCommand();
-            await _commandDispatcher.SendAsync(command);
+            var resultMap = await _commandDispatcher.SendAsync(command);
 
             var response = new DownloadImagesResponseDto
             {
                 Success = true,
-                Message = "Download started."
+                Message = "Downloads processed. Check status for each URL.",
+                UrlAndNames = resultMap
             };
 
-            return Accepted(response);
+            return Ok(response);
         }
 
         [HttpGet("get-image-by-name/{imageName}")]
         public async Task<IActionResult> GetImageByName(string imageName)
         {
+            var requestDto = new GetImageByNameRequestDto { ImageName = imageName };
+            var validationResult = new GetImageByNameRequestDtoValidator().Validate(requestDto);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => new { e.PropertyName, e.ErrorMessage }));
+            }
+
             var query = ImageMapper.ToQuery(imageName);
             var imageBase64 = await _queryDispatcher.QueryAsync(query);
 

@@ -7,19 +7,26 @@ namespace AsyncImage_Fetcher_Service.Logic.Images.Handlers
     public class GetImageByNameQueryHandler : IQueryHandler<GetImageByNameQuery, string>
     {
         private readonly ILogger<GetImageByNameQueryHandler> _logger;
-        private readonly IImageRequestService _imageRequestService;
+        private readonly IImageRepository _imageRepository;
 
-        public GetImageByNameQueryHandler(ILogger<GetImageByNameQueryHandler> logger, IImageRequestService imageRequestService)
+        public GetImageByNameQueryHandler(ILogger<GetImageByNameQueryHandler> logger, IImageRepository imageRepository)
         {
             _logger = logger;
-            _imageRequestService = imageRequestService;
+            _imageRepository = imageRepository;
         }
 
         public async Task<string> HandleAsync(GetImageByNameQuery query, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("Handling GetImageByNameQuery for image url: {ImageUrl}", query.ImageName);
+            _logger.LogInformation("Handling GetImageByNameQuery for image: {ImageName}", query.ImageName);
+            var image = await _imageRepository.GetImageByNameAsync(query.ImageName, cancellationToken);
 
-            return "dummyBase64Image";
+            if (image is null)
+            {
+                _logger.LogWarning("Image not found: {ImageName}", query.ImageName);
+                return null;
+            }
+
+            return image.Base64Content;
         }
     }
 }

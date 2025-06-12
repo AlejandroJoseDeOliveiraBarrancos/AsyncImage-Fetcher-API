@@ -17,6 +17,13 @@ namespace AsyncImage_Fetcher_Service.Logic
             await handler.HandleAsync(command, cancellationToken);
         }
 
+        public Task<TResult> SendAsync<TResult>(ICommand<TResult> command, CancellationToken cancellationToken = default)
+        {
+            var handlerType = typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), typeof(TResult));
+            dynamic handler = _serviceProvider.GetRequiredService(handlerType);
+            return handler.HandleAsync((dynamic)command, cancellationToken);
+        }
+
         public async Task<TResult> QueryAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default)
         {
             await using var scope = _serviceProvider.CreateAsyncScope();

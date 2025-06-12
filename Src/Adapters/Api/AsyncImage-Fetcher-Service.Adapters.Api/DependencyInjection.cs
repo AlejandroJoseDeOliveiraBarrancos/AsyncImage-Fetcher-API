@@ -1,4 +1,5 @@
 ﻿using AsyncImage_Fetcher_Service.Adapters.Api.Middleware;
+using AsyncImage_Fetcher_Service.Drivers.Data;
 using AsyncImage_Fetcher_Service.Drivers.Requests;
 using AsyncImage_Fetcher_Service.Logic;
 
@@ -23,6 +24,7 @@ public static class DependencyInjection
 
         services.AddLogicServices();
         services.AddRequestsServices();
+        services.AddDataServices();
 
         return services;
     }
