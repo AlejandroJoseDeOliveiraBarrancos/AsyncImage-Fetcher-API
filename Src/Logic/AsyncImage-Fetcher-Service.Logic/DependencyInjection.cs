@@ -1,4 +1,7 @@
 ﻿using AsyncImage_Fetcher_Service.Logic.Abstractions.Interfaces;
+using AsyncImage_Fetcher_Service.Logic.Images.Commands;
+using AsyncImage_Fetcher_Service.Logic.Images.Handlers;
+using AsyncImage_Fetcher_Service.Logic.Images.Queries;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -8,8 +11,12 @@ namespace AsyncImage_Fetcher_Service.Logic
     {
         public static IServiceCollection AddLogicServices(this IServiceCollection services)
         {
-            services.AddSingleton<ICommandDispatcher, Dispatcher>();
-            services.AddSingleton<IQueryDispatcher, Dispatcher>();
+            services.AddScoped<IQueryHandler<GetImageByNameQuery, string>, GetImageByNameQueryHandler>();
+            services.AddScoped<ICommandHandler<DownloadImagesCommand>, DownloadImagesCommandHandler>();
+
+            services.AddScoped<IDispatcher, Dispatcher>();
+            services.AddScoped<ICommandDispatcher, Dispatcher>();
+            services.AddScoped<IQueryDispatcher, Dispatcher>();
 
             var assembly = Assembly.GetExecutingAssembly();
 

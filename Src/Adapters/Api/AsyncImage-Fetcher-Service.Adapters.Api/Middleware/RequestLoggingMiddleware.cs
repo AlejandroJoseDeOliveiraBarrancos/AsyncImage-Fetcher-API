@@ -1,7 +1,3 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-
 namespace AsyncImage_Fetcher_Service.Adapters.Api.Middleware
 {
     public class RequestLoggingMiddleware : IMiddleware
@@ -24,4 +20,4 @@ namespace AsyncImage_Fetcher_Service.Adapters.Api.Middleware
             }
         }
     }
-} 
+}

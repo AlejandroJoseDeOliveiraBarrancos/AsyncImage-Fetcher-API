@@ -4,7 +4,6 @@ using AsyncImage_Fetcher_Service.Adapters.Api.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDriversServices();
 builder.Services.AddPresentation();
 
 

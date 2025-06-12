@@ -1,8 +1,5 @@
 using AsyncImage_Fetcher_Service.Logic.Abstractions.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace AsyncImage_Fetcher_Service.Logic
 {

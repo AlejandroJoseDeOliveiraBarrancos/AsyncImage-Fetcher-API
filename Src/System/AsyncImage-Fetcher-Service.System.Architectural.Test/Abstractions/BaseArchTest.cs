@@ -7,16 +7,16 @@ namespace AsyncImage_Fetcher_Service.System.Architectural.Test.Abstractions;
 public abstract class BaseArchTest
 {
     /// <summary>Assembly for Adapters layer (Api project).</summary>
-    protected static readonly Assembly AdaptersAssembly = typeof(AsyncImage_Fetcher_Service.Adapters.DependencyInjection).Assembly;
+    protected static readonly Assembly AdaptersAssembly = typeof(AsyncImage_Fetcher_Service.Adapters.Api.DependencyInjection).Assembly;
 
     /// <summary>Assembly for Drivers layer (Data project).</summary>
-    protected static readonly Assembly DriversDataAssembly = typeof(AsyncImage_Fetcher_Service.Drivers.DependencyInjection).Assembly;
+    protected static readonly Assembly DriversDataAssembly = typeof(AsyncImage_Fetcher_Service.Drivers.Data.DependencyInjection).Assembly;
 
     /// <summary>Assembly for Logic layer (Logic project).</summary>
     protected static readonly Assembly LogicAssembly = typeof(AsyncImage_Fetcher_Service.Logic.DependencyInjection).Assembly;
 
     /// <summary>Assembly for Rules layer (Images project).</summary>
-    protected static readonly Assembly RulesImagesAssembly = typeof(AsyncImage_Fetcher_Service.Rules.Images.Image).Assembly;
+    protected static readonly Assembly RulesImagesAssembly = typeof(AsyncImage_Fetcher_Service.Rules.Image).Assembly;
 
     protected const string AdaptersNamespace = "AsyncImage_Fetcher_Service.Adapters";
     protected const string DriversNamespace = "AsyncImage_Fetcher_Service.Drivers";

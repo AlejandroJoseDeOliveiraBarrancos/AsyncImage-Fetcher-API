@@ -1,6 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace AsyncImage_Fetcher_Service.Logic.Abstractions.Interfaces
 {
     public interface ICommandHandler<in TCommand> where TCommand : ICommand
@@ -12,4 +9,4 @@ namespace AsyncImage_Fetcher_Service.Logic.Abstractions.Interfaces
     {
         Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default);
     }
-} 
+}

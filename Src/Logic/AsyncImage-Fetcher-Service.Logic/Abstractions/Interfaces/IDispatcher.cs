@@ -1,6 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace AsyncImage_Fetcher_Service.Logic.Abstractions.Interfaces
 {
     public interface IDispatcher { }
@@ -14,4 +11,4 @@ namespace AsyncImage_Fetcher_Service.Logic.Abstractions.Interfaces
     {
         Task<TResult> QueryAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken = default);
     }
-} 
+}

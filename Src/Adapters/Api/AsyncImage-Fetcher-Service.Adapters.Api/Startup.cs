@@ -1,4 +1,3 @@
-using AsyncImage_Fetcher_Service.Adapters.Api.Middleware;
 using Microsoft.OpenApi.Models;
 
 namespace AsyncImage_Fetcher_Service.Adapters.Api;

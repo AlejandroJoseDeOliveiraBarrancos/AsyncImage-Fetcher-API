@@ -1,9 +1,8 @@
-using System.Threading.Tasks;
 using AsyncImage_Fetcher_Service.Adapters.Api.Contracts.V1;
 using AsyncImage_Fetcher_Service.Adapters.Api.Controllers.Base;
+using AsyncImage_Fetcher_Service.Adapters.Api.Mappers;
 using AsyncImage_Fetcher_Service.Logic.Abstractions.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using AsyncImage_Fetcher_Service.Adapters.Api.Mappers;
 
 namespace AsyncImage_Fetcher_Service.Adapters.Api.Controllers
 {
@@ -24,10 +23,10 @@ namespace AsyncImage_Fetcher_Service.Adapters.Api.Controllers
             var command = request.ToCommand();
             await _commandDispatcher.SendAsync(command);
 
-            var response = new DownloadImagesResponseDto 
-            { 
-                Success = true, 
-                Message = "Download started." 
+            var response = new DownloadImagesResponseDto
+            {
+                Success = true,
+                Message = "Download started."
             };
 
             return Accepted(response);

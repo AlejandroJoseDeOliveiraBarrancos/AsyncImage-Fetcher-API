@@ -1,9 +1,4 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AsyncImage_Fetcher_Service.Adapters.Api.Middleware
 {

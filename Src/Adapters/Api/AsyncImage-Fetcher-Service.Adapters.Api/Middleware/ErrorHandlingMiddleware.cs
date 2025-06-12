@@ -1,8 +1,4 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace AsyncImage_Fetcher_Service.Adapters.Api.Middleware
 {
@@ -40,4 +36,4 @@ namespace AsyncImage_Fetcher_Service.Adapters.Api.Middleware
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
     }
-} 
+}

@@ -1,5 +1,6 @@
 ﻿using AsyncImage_Fetcher_Service.Adapters.Api.Middleware;
-using Microsoft.Extensions.DependencyInjection;
+using AsyncImage_Fetcher_Service.Drivers.Requests;
+using AsyncImage_Fetcher_Service.Logic;
 
 namespace AsyncImage_Fetcher_Service.Adapters.Api;
 
@@ -19,6 +20,10 @@ public static class DependencyInjection
         services.AddSingleton<ErrorHandlingMiddleware>();
         services.AddSingleton<RequestLoggingMiddleware>();
         services.AddSingleton<CorrelationIdMiddleware>();
+
+        services.AddLogicServices();
+        services.AddRequestsServices();
+
         return services;
     }
 }

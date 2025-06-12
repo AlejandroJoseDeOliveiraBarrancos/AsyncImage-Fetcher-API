@@ -10,7 +10,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -19,11 +19,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\Logic\AsyncImage-Fetcher-Service.Logic\AsyncImage-Fetcher-Service.Logic.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\Drivers\AsyncImage-Fetcher-Service.Drivers\AsyncImage-Fetcher-Service.Drivers.csproj" />
+	  <ProjectReference Include="..\..\..\Drivers\Data\AsyncImage-Fetcher-Service.Drivers.Data\AsyncImage-Fetcher-Service.Drivers.Data.csproj" />
+	  <ProjectReference Include="..\..\..\Drivers\Requests\AsyncImage-Fetcher-Service.Drivers.Requests\AsyncImage-Fetcher-Service.Drivers.Requests.csproj" />
+	  <ProjectReference Include="..\..\..\Logic\AsyncImage-Fetcher-Service.Logic\AsyncImage-Fetcher-Service.Logic.csproj" />
 	</ItemGroup>
 
 </Project>
