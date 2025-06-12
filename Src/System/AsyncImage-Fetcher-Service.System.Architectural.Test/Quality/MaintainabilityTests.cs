@@ -9,12 +9,8 @@ public class MaintainabilityTests : BaseArchTest
         RulesImagesAssembly,
         LogicAssembly,
         DriversDataAssembly
-        // AdaptersAssembly is excluded as it might wrap exceptions
     ];
 
-    // List of BCL/Framework exceptions that are okay to inherit directly from System.Exception if needed by framework design
-    // Or more likely, exceptions that are okay to *use* but shouldn't be subclassed directly from System.Exception
-    // Adjust this list based on actual allowed exceptions in your domain/logic.
     private static readonly string[] AllowedBaseExceptionNames =
     [
         nameof(ArgumentException),
@@ -25,8 +21,6 @@ public class MaintainabilityTests : BaseArchTest
         nameof(NotImplementedException),
         nameof(FormatException),
         nameof(TimeoutException)
-        // Add any custom BASE exceptions here if they are allowed to inherit Exception directly
-        // "MyCustomBaseException"
     ];
 
     [Fact]
@@ -157,15 +151,4 @@ public class MaintainabilityTests : BaseArchTest
            $"The following methods directly return System.Exception, which should be avoided: {string.Join(", ", failingMethods)}");
     }
 
-    // --- Removed Exception Handling Convention Tests ---
-    // The following tests were removed because the required NetArchTest.Rules.Condition
-    // type could not be resolved by the linter/compiler in the current environment,
-    // even with fully qualified names. This likely requires local troubleshooting
-    // (e.g., dotnet restore --force, clean, build).
-
-    // [Fact]
-    // public void CustomExceptions_ShouldNotInherit_DirectlyFrom_SystemException() { ... }
-
-    // [Fact]
-    // public void Methods_ShouldNotReturn_BaseExceptionType() { ... }
 }
