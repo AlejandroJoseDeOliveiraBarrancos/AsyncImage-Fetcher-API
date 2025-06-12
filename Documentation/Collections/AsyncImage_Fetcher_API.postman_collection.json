@@ -1,0 +1,81 @@
+{
+	"info": {
+		"_postman_id": "d2e0a4f5-1b3a-4c8d-9e6a-0f8c8d8b8b8b",
+		"name": "AsyncImage Fetcher API",
+		"description": "A Postman collection for the AsyncImage Fetcher API. This collection contains example requests for downloading images and retrieving them by name.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Download Multiple Images",
+			"description": "Submits a list of image URLs for concurrent download. The `maxDownloadAtOnce` field controls how many images are downloaded in parallel. The response will include a dictionary mapping each original URL to its new unique filename or an error message.",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"imageUrls\": [\n        \"https://images.dog.ceo/breeds/terrier-norwich/n02094258_1003.jpg\",\n        \"https://images.dog.ceo/breeds/cattledog-australian/IMG_1062.jpg\",\n        \"https://images.dog.ceo/breeds/retriever-golden/n02099601_3332.jpg\",\n        \"http://this-is-an-invalid-url.com/image.jpg\"\n    ],\n    \"maxDownloadAtOnce\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/images/download-images",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"images",
+						"download-images"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Image by Name",
+			"description": "Retrieves a previously downloaded image by its unique name, which is returned from the download endpoint. \n\nReplace the `:imageName` path variable with the actual filename you want to retrieve.\n\nThe response will contain the Base64-encoded string of the image.",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/images/get-image-by-name/:imageName",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"images",
+						"get-image-by-name",
+						":imageName"
+					],
+					"variable": [
+						{
+							"key": "imageName",
+							"value": "your-unique-image-name.jpg",
+							"description": "The unique name of the image you want to retrieve."
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
+} 
