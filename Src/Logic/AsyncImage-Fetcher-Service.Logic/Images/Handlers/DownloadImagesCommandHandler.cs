@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace AsyncImage_Fetcher_Service.Logic.Images.Handlers
 {
-    public class DownloadImagesCommandHandler : ICommandHandler<DownloadImagesCommand, Dictionary<string, string>>
+    public sealed class DownloadImagesCommandHandler : ICommandHandler<DownloadImagesCommand, Dictionary<string, string>>
     {
         private readonly ILogger<DownloadImagesCommandHandler> _logger;
         private readonly IImageRequestService _imageRequestService;

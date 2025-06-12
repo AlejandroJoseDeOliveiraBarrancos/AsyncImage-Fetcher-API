@@ -1,4 +1,6 @@
-﻿using AsyncImage_Fetcher_Service.Adapters.Api.Middleware;
+﻿using AsyncImage_Fetcher_Service.Adapters.Api.Abstractions;
+using AsyncImage_Fetcher_Service.Adapters.Api.Mappers;
+using AsyncImage_Fetcher_Service.Adapters.Api.Middleware;
 using AsyncImage_Fetcher_Service.Drivers.Data;
 using AsyncImage_Fetcher_Service.Drivers.Requests;
 using AsyncImage_Fetcher_Service.Logic;
@@ -18,6 +20,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
+        services.AddSingleton<IImageMapper, ImageMapper>();
         services.AddSingleton<ErrorHandlingMiddleware>();
         services.AddSingleton<RequestLoggingMiddleware>();
         services.AddSingleton<CorrelationIdMiddleware>();

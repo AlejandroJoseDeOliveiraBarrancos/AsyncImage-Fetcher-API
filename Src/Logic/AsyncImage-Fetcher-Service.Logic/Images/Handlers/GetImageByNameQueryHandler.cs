@@ -1,10 +1,11 @@
 using AsyncImage_Fetcher_Service.Logic.Abstractions.Interfaces;
 using AsyncImage_Fetcher_Service.Logic.Images.Queries;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace AsyncImage_Fetcher_Service.Logic.Images.Handlers
 {
-    public class GetImageByNameQueryHandler : IQueryHandler<GetImageByNameQuery, string>
+    public sealed class GetImageByNameQueryHandler : IQueryHandler<GetImageByNameQuery, string>
     {
         private readonly ILogger<GetImageByNameQueryHandler> _logger;
         private readonly IImageRepository _imageRepository;

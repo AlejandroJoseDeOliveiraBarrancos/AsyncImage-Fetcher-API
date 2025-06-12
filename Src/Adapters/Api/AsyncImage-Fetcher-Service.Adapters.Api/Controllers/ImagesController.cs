@@ -1,21 +1,33 @@
+using AsyncImage_Fetcher_Service.Adapters.Api.Abstractions;
 using AsyncImage_Fetcher_Service.Adapters.Api.Contracts.V1;
 using AsyncImage_Fetcher_Service.Adapters.Api.Contracts.V1.Validators;
 using AsyncImage_Fetcher_Service.Adapters.Api.Controllers.Base;
 using AsyncImage_Fetcher_Service.Adapters.Api.Mappers;
 using AsyncImage_Fetcher_Service.Logic.Abstractions.Interfaces;
+using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AsyncImage_Fetcher_Service.Adapters.Api.Controllers
 {
-    public class ImagesController : BaseController
+    [AllowAnonymous]
+    public sealed class ImagesController : BaseController
     {
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly IQueryDispatcher _queryDispatcher;
+        private readonly IImageMapper _imageMapper;
+        private readonly IValidator<GetImageByNameRequestDto> _getImageValidator;
 
-        public ImagesController(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
+        public ImagesController(
+            ICommandDispatcher commandDispatcher, 
+            IQueryDispatcher queryDispatcher,
+            IImageMapper imageMapper,
+            IValidator<GetImageByNameRequestDto> getImageValidator)
         {
             _commandDispatcher = commandDispatcher;
             _queryDispatcher = queryDispatcher;
+            _imageMapper = imageMapper;
+            _getImageValidator = getImageValidator;
         }
 
         [HttpPost("download-images")]
@@ -38,22 +50,22 @@ namespace AsyncImage_Fetcher_Service.Adapters.Api.Controllers
         public async Task<IActionResult> GetImageByName(string imageName)
         {
             var requestDto = new GetImageByNameRequestDto { ImageName = imageName };
-            var validationResult = new GetImageByNameRequestDtoValidator().Validate(requestDto);
+            var validationResult = _getImageValidator.Validate(requestDto);
 
             if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.Errors.Select(e => new { e.PropertyName, e.ErrorMessage }));
             }
 
-            var query = ImageMapper.ToQuery(imageName);
+            var query = _imageMapper.ToQuery(imageName);
             var imageBase64 = await _queryDispatcher.QueryAsync(query);
 
             if (string.IsNullOrEmpty(imageBase64))
             {
-                return NotFound(ImageMapper.ToErrorDto("Image not found"));
+                return NotFound(_imageMapper.ToErrorDto("Image not found"));
             }
 
-            var response = ImageMapper.ToDto(imageBase64);
+            var response = _imageMapper.ToDto(imageBase64);
 
             return Ok(response);
         }

@@ -16,7 +16,7 @@ public abstract class BaseArchTest
     protected static readonly Assembly LogicAssembly = typeof(AsyncImage_Fetcher_Service.Logic.DependencyInjection).Assembly;
 
     /// <summary>Assembly for Rules layer (Images project).</summary>
-    protected static readonly Assembly RulesImagesAssembly = typeof(AsyncImage_Fetcher_Service.Rules.Image).Assembly;
+    protected static readonly Assembly RulesImagesAssembly = typeof(AsyncImage_Fetcher_Service.Rules.Models.Image).Assembly;
 
     protected const string AdaptersNamespace = "AsyncImage_Fetcher_Service.Adapters";
     protected const string DriversNamespace = "AsyncImage_Fetcher_Service.Drivers";

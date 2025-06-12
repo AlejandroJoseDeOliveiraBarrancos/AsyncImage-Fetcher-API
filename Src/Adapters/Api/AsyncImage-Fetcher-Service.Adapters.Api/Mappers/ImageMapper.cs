@@ -1,22 +1,17 @@
+using AsyncImage_Fetcher_Service.Adapters.Api.Abstractions;
 using AsyncImage_Fetcher_Service.Adapters.Api.Contracts.V1;
-using AsyncImage_Fetcher_Service.Logic.Images.Commands;
 using AsyncImage_Fetcher_Service.Logic.Images.Queries;
 
 namespace AsyncImage_Fetcher_Service.Adapters.Api.Mappers
 {
-    public static class ImageMapper
+    public class ImageMapper : IImageMapper
     {
-        public static DownloadImagesCommand ToCommand(this DownloadImagesRequestDto request)
-        {
-            return new DownloadImagesCommand(request.ImageUrls, request.MaxDownloadAtOnce);
-        }
-
-        public static GetImageByNameQuery ToQuery(string imageName)
+        public GetImageByNameQuery ToQuery(string imageName)
         {
             return new GetImageByNameQuery(imageName);
         }
 
-        public static GetImageResponseDto ToDto(string imageBase64)
+        public GetImageResponseDto ToDto(string imageBase64)
         {
             return new GetImageResponseDto
             {
@@ -25,10 +20,11 @@ namespace AsyncImage_Fetcher_Service.Adapters.Api.Mappers
             };
         }
 
-        public static ErrorResponseDto ToErrorDto(string message)
+        public ErrorResponseDto ToErrorDto(string message)
         {
             return new ErrorResponseDto
             {
+                Success = false,
                 Message = message
             };
         }

@@ -45,11 +45,11 @@ public class NamingConventionTests : BaseArchTest
             AdaptersAssembly, DriversDataAssembly,
             LogicAssembly, RulesImagesAssembly
         })
-        .That()
+            .That()
         .AreInterfaces();
 
         string[] allowedNamespaces = {
-            $"{RulesNamespace}.Images.Abstractions",
+            $"{RulesNamespace}.Abstractions",
             $"{LogicNamespace}.Abstractions",
             $"{DriversNamespace}.Abstractions",
             $"{AdaptersNamespace}.Abstractions"
@@ -64,7 +64,7 @@ public class NamingConventionTests : BaseArchTest
 
         result.IsSuccessful.Should().BeTrue(
             because: $"Interfaces (Abstractions) must reside only in *.Abstractions namespaces:\n{string.Join(", ", allowedNamespaces)}" +
-                     GetFailingTypes(result));
+            GetFailingTypes(result));
     }
 }
 
